@@ -1,10 +1,10 @@
-#ifndef DAVEMIRRORCLE2_H
-#define DAVEMIRRORCLE2_H
+#ifndef LD_MEMSMIRROR_H
+#define LD_MEMSMIRROR_H
 
 #include <string>
 #include <vector>
 
-namespace DaveMirrorcle2{
+namespace LD_MemsMirror{
     int ClipValue(float &value, float limit_hi, float limit_lo);
     int ClipValue(float &value);
 
@@ -43,11 +43,11 @@ namespace DaveMirrorcle2{
             std::vector<char> RecvCOM(int num_Bytes=0);
 
     };
-} // namespace DaveMirrorcle2
+} // namespace LD_MEMSMIRROR_H
 
 int MirrorLoopTest();
 int MirrorInitTest();
 int MirrorWiggle();
 int MirrorRandom();
 
-#endif // DAVEMIRRORCLE2_H
+#endif // LD_MEMSMIRROR_H

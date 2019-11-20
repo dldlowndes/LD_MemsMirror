@@ -26,9 +26,9 @@ void setup() {
   // Read these values from the specific MEMS device datasheet.
   // Probably trim down the v_Difference_Max by a few volts just
   // to be safe.
-  m_Mems_Options.f_Clk = 100;
-  m_Mems_Options.v_Bias_Volts = 90;
-  m_Mems_Options.v_Difference_Max = 170;
+  m_Mems_Options.f_Clk = 220;
+  m_Mems_Options.v_Bias_Volts = 80;
+  m_Mems_Options.v_Difference_Max = 159;
 
   m_Pin_Nos.f_Clk_Pin = 5;
   m_Pin_Nos.mems_En_Pin = 3;

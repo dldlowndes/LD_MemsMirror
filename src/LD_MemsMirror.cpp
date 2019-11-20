@@ -1,4 +1,4 @@
-#include "davemirrorcle2.h"
+#include "LD_MemsMirror.h"
 
 #include "rs232.h"
 #include "DaveUtil.h"
@@ -13,7 +13,7 @@
 // Write a method for reading messages
 //
 
-namespace DaveMirrorcle2{
+namespace LD_MemsMirror{
     int ClipValue(float &value, float limit_hi, float limit_lo){
         if (value > limit_hi){
             value = limit_hi;
@@ -42,18 +42,18 @@ namespace DaveMirrorcle2{
     }
 
     int Mirror::Init(MirrorOptions my_Options){
-        comport_Number = RS232_GetPortnr(my_Options.comport_Name.c_str());
+        this->comport_Number = RS232_GetPortnr(my_Options.comport_Name.c_str());
         std::cout << "Com port: " << my_Options.comport_Name << " is number " << comport_Number << std::endl;
         RS232_OpenComport(comport_Number, 115200, "8n1");
         // Necessary. Arduino takes some time to set up afer connection?
         MySleep(2000);
 
-        limit = my_Options.limit;
+        this->limit = my_Options.limit;
 
         // Send init command to MEMS;
         Set_HV_Driver(true);
 
-        is_Initted = true;
+        this->is_Initted = true;
 
         // Move to origin.
         Move(0, 0);
@@ -65,10 +65,10 @@ namespace DaveMirrorcle2{
     int Mirror::Set_HV_Driver(bool hv_On){
         if (hv_On){
             std::cout << "Toggle HV driver ON" << std::endl;
-            outBuffer[0] = 'I';
+            this->outBuffer[0] = 'I';
         }
         else{
-            outBuffer[0] = 'X';
+            this->outBuffer[0] = 'X';
             std::cout << "Toggle HV driver OFF" << std::endl;
         }
         SendCOM(outBuffer);
@@ -94,10 +94,10 @@ namespace DaveMirrorcle2{
             ClipValue(y, limit, -limit);
 
             // Convert into 0-65535 values.
-            mems_X = (x+1)*32767;
-            mems_Y = (y+1)*32767;
+            this->mems_X = (x+1)*32767;
+            this->mems_Y = (y+1)*32767;
 
-            outBuffer = {
+            this->outBuffer = {
                 (uint8_t)('m'),
                 (uint8_t)(mems_X >> 8),
                 (uint8_t)(mems_X & 0xFF),
@@ -108,8 +108,8 @@ namespace DaveMirrorcle2{
             SendCOM(outBuffer);
             //std::cout << "Mirror set to " << mems_X << ", " << mems_Y << std::endl;
 
-            mems_X_Current = mems_X;
-            mems_Y_Current = mems_Y;
+            this->mems_X_Current = this->mems_X;
+            this->mems_Y_Current = this->mems_Y;
 
             return 0;
         }
@@ -139,11 +139,11 @@ namespace DaveMirrorcle2{
 }
 
 int MirrorLoopTest(){
-    DaveMirrorcle2::MirrorOptions my_Options;
+    LD_MemsMirror::MirrorOptions my_Options;
     my_Options.comport_Name = "ttyACM0";
     my_Options.limit = 0.95;
 
-    DaveMirrorcle2::Mirror my_Mirror(my_Options);
+    LD_MemsMirror::Mirror my_Mirror(my_Options);
 
     std::cin.get();
     my_Mirror.Move(0.5, 0.5);
@@ -155,11 +155,11 @@ int MirrorLoopTest(){
 }
 
 int MirrorInitTest(){
-    DaveMirrorcle2::MirrorOptions my_Options;
+    LD_MemsMirror::MirrorOptions my_Options;
     my_Options.comport_Name = "ttyACM0";
     my_Options.limit = 0.95;
 
-    DaveMirrorcle2::Mirror my_Mirror(my_Options);
+    LD_MemsMirror::Mirror my_Mirror(my_Options);
 
     bool hv_Status = false;
     while(std::cin.get() != 'x'){
@@ -173,14 +173,14 @@ int MirrorInitTest(){
 }
 
 int MirrorWiggle(){
-    DaveMirrorcle2::MirrorOptions my_Options;
+    LD_MemsMirror::MirrorOptions my_Options;
     my_Options.comport_Name = "ttyACM0";
     my_Options.limit = 0.95;
 
     float increment = 0.01;
     int sleep_Time = 10000;
 
-    DaveMirrorcle2::Mirror my_Mirror(my_Options);
+    LD_MemsMirror::Mirror my_Mirror(my_Options);
 
     my_Mirror.Set_HV_Driver(false);
 
@@ -217,13 +217,13 @@ int MirrorWiggle(){
 }
 
 int MirrorRandom(){
-    DaveMirrorcle2::MirrorOptions my_Options;
+    LD_MemsMirror::MirrorOptions my_Options;
     my_Options.comport_Name = "ttyACM0";
     my_Options.limit = 0.80;
 
     int sleep_Time = 500;
 
-    DaveMirrorcle2::Mirror my_Mirror(my_Options);
+    LD_MemsMirror::Mirror my_Mirror(my_Options);
 
     std::cin.get();
 
